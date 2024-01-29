@@ -1,0 +1,43 @@
+---
+const currentDate = new Date();
+
+const iconSize = "24px";
+---
+
+<footer class="py-4 flex justify-between items-center gap-4 bg-zinc-400">
+  <div class="flex flex-col font-mono text-slate-800 pl-10 text-sm">
+    <p>copyright {currentDate.getFullYear()}</p>
+    <!-- <div class="pl-4 text-xs">
+      <p>
+        code:
+        <a
+          href="https://opensource.org/license/mit/"
+          target="_blank"
+          class="underline"
+          rel="noopener noreferrer">MIT</a
+        >
+      </p>
+      <p>
+        text:
+        <a
+          href="https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode"
+          target="_blank"
+          class="underline"
+          rel="noopener noreferrer">CC BY-NC-ND 4.0</a
+        >
+      </p>
+    </div> -->
+  </div>
+  <div></div>
+  <!-- <div class="flex items-center gap-3 pr-10">
+    <a href="https://www.are.na/miles-conn-aygvy9psasq">
+      <AreNA size={"36px"} />
+    </a>
+    <a href="https://github.com/MilesConn">
+      <Github size={iconSize} strokeWidth="1.5" client:visible />
+    </a>
+    <a href="https://twitter.com/technoHimbo">
+      <Twitter size={iconSize} fill="black" client:visible />
+    </a>
+  </div> -->
+</footer>

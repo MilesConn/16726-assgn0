@@ -3,7 +3,10 @@
 import Layout from "../layouts/Layout.astro";
 import Prose from "../components/Prose.astro";
 import { getEntry } from "astro:content";
-import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import miles from "../assets/framedMiles.png";
+import TableOfContents from "../components/TableOfContents.astro";
+import Footer from "../components/Footer.astro";
 
 // export async function getStaticPaths() {
 //   const blogEntries = await getCollection("posts");
@@ -15,14 +18,20 @@ import { getCollection } from "astro:content";
 
 // Set post here based on file name
 const entry = await getEntry("posts", "lorem_ipsum");
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 ---
 
 <Layout title="Assignment 0">
-  <main class="flex flex-col items-center">
+  <main class="flex flex-col items-center mb-8">
     <h1 class="text-5xl font-bold my-8">Assignment 0</h1>
     <Prose class="w-full max-w-4xl mx-auto">
+      <>
+        <Image src={miles} alt="Framed photo of Miles" class="mb-0" />
+        <figcaption class="text-center mt-4">A photo of the author</figcaption>
+      </>
+      <TableOfContents headings={headings} />
       <Content />
     </Prose>
   </main>
+  <Footer />
 </Layout>
