@@ -3,13 +3,22 @@ title: "Lorem Ipsum"
 author: "Miles Conn"
 ---
 import { Image } from 'astro:assets';
+import CaptionedImageGallery from '../../components/CaptionedImageGallery.astro';
 import miles from '../../assets/framedMiles.png';
+import matplotlib from "../../assets/img_matplotlib_pyplot.png"
 
 <Image src={miles} alt="Framed photo of Miles"/>
 
 # Lorem
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum consectetur libero id faucibus nisl tincidunt eget. Nec dui nunc mattis enim. Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Tempus urna et pharetra pharetra massa. Ac auctor augue mauris augue. Ornare arcu dui vivamus arcu felis bibendum ut tristique. Et sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Nibh nisl condimentum id venenatis a condimentum vitae sapien. Scelerisque varius morbi enim nunc faucibus a. Lectus sit amet est placerat in egestas erat imperdiet. Id aliquet risus feugiat in ante. Suscipit tellus mauris a diam maecenas sed enim ut. Scelerisque fermentum dui faucibus in. Urna molestie at elementum eu facilisis sed odio. Urna neque viverra justo nec ultrices. Mauris commodo quis imperdiet massa tincidunt nunc.
+
+<CaptionedImageGallery layout="2x2" captions="Wow data!">
+  <Image src={matplotlib} alt="Image 1" slot="images" />
+  <Image src={matplotlib} alt="Image 2" slot="images" />
+  <Image src={matplotlib} alt="Image 3" slot="images" />
+  <Image src={matplotlib} alt="Image 4" slot="images" />
+</CaptionedImageGallery>
 
 ## Consequat
 
