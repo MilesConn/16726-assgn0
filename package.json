@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "postcss input.css -o src/input.css"
+    "build": "postcss input.css -o src/input.css",
+    "dev": "pnpm run build && live-server src --port=8080"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.17",
+    "live-server": "^1.2.2",
     "postcss-cli": "^11.0.0",
     "tailwindcss": "^3.4.1"
   }
