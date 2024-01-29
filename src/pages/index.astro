@@ -18,9 +18,10 @@ const entry = await getEntry("posts", "lorem_ipsum");
 const { Content } = await entry.render();
 ---
 
-<Layout title="Temporary Titel">
-  <main>
-    <Prose>
+<Layout title="Assignment 0">
+  <main class="flex flex-col items-center">
+    <h1 class="text-5xl font-bold my-8">Assignment 0</h1>
+    <Prose class="w-full max-w-prose mx-auto">
       <Content />
     </Prose>
   </main>
