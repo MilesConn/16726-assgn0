@@ -1,0 +1,131 @@
+---
+title: "Colorizing the Prokudin-Gorskii Photo Collection "
+assignment: 1
+author: "Miles Conn"
+---
+import { Image } from 'astro:assets';
+// import emir_align_with_better_color from "../../assets/assgn1/align_with_better_color.png "
+import matplotlib from "../../assets/assgn1/align_with_better_color.png";
+
+# Initial Implementation 
+
+In this assignment we were asked to align the black and white plates that compromise the [Prokudin
+Gorskii collection](https://www.loc.gov/collections/prokudin-gorskii/about-this-collection/). The
+assignment actually was a great refresher for python and numpy and getting back into the workflow of 
+working with images which can be a fragile process. 
+
+The images are made up of red, green,and blue plates and we use the blue plate as a static image for
+everything. Meaning, if we want to warp or shift an image then we'd map that image to blue.
+
+The initial implementation was to bruteforce a search window of shifts ie shifting red and then
+comparing it to blue. I implemented both the L2 Norm and the Normalized Cross Correlation but didn't
+find much difference between them so I used the L2 Norm over NCC as it was faster. This
+implementation worked well on `cathedral.jpg` which is a small image but took too much time for the
+larger tifs. For the larger tifs I implemented a gaussian pyramid where each layer is half the size
+of the previous one. This is a tunable parameter but I didn't play with it a bunch. The number of
+layers are determined by the `MIN_SIZE` so I keep producing layers until continuing further would
+make my file smaller than `MIN_SIZE` in any dimension. 
+
+From there I run the `align` process again. This time however each shift factor gets scaled up and
+moves the shift range. For instance say my best shift for a smaller image was `(2,3)` then my window
+for the next level up in the layer would be `-MAX_RANGE + SHIFT_X * SCALE_FACTOR, MAX_RANGE +
+    SHIFT_X * SCALE_FACTOR`. 
+
+where `MAX_RANGE` is the range of shift values, another parameter I didn't play with. This allows us
+to theoretically search a range of `MAX_RANGE^PYRAMID_LEVELS` without having to pay such an
+expensive cost. This method works for this dataset because the images are guarenteed to be closely
+aligned. A furhter optimization I thought of but didn't implemented is instead of brute forcing over
+the window we could calculate the derivative of our norm in a small window and then take a step in
+the direction of the greatest negative value which would result in us moving towards a place where
+our SSD is smallest. This small local search is very similar to the pyramid in practice. 
+
+## Brittleness 
+
+As I was writing my solutions up I would test everything on `cathedral.jpg` as that image is small
+and things work well. Once I confirmed I was getting the same shifts in my pyramid as I was for a
+large window with no levels I ran my solution on `emir.tif` and got bad results as seen below. The
+issue was in `emir.tif`, due to the richness of color in his clothing, comparing raw pixel values
+with the norms don't work well. 
+
+// emir b + w plates 
+
+I didn't realize this and thus spent multiple hours debugging only to realize this issue only
+plagues `emir.tif`. Hence in my Bells and Whistles section I set about working on algorithms to work
+for `emir.tif`. 
+
+## Comparison of Norms
+
+Below you can see the difference in norms for some images. To my untrained eye there isn't much of a
+difference so as I said I stuck with `L2` as it was fastest.
+
+# Bells & Whistles
+
+As I mentioned in the previous section due to the failures I encountered with `emir.tif` I was
+destined to get him to work. 
+
+One thing I'll note is some of my functions are a bit brittle. I'll cover that but it would require
+extensive analysis/parameter tuning to make something that works for all images in all conditions.
+
+## Homography 
+
+I chose to try and use a homography to find the warp between the images. I chose a homography
+because why not, it's the most complicated transformation you can implement between two planes and I
+was going to use libraries.
+
+### Naive Approach
+
+My first strategy was just a naive homography. A homography is solving
+for the transformation between two planes. Because I was lazy my naive approach tried to solve the
+homography for the entire image without descriptors. The idea being for a static scene there would
+be some transformation that maps one image to the other. While this worked with `cathedral.jpg` it didn't work with
+`emir.tif` and was also really slow. In retrospect this was a bad idea because the constraint solver
+within the homography helper which is going to try and solve `At = B --> t = BA^-1` is going to run
+into the same issues as our L2 norm. 
+
+### Leveraging Descriptors
+
+To get around this issue we should use descriptors or features that are resistant to changes in
+brightness. I chose [SIFT
+Descriptors](https://en.wikipedia.org/wiki/Scale-invariant_feature_transform) because they work
+surprisingly effectively and would have the resistant property we want. I could've gone with a
+simpler descriptor or even used something simple like edge patches but I chose SIFT. After finding
+my descriptors I found matches between them and then solved for the homography between them. This is
+way faster as the matrix is going to be bounded in size by the number of matching descriptors and
+the descriptors are matching the same logical `(x,y)` points so they're resistant to our norm
+problem from before. Then I take the resulting warp matrix and just warp the red and green channel
+to the blue channel. 
+
+## Auto Cropping
+
+My final bell and whistle was auto cropping. I was really excited after I implemented this only to
+realize there was some edge cases that would take further analysis to fully figure out. The basic
+idea behind autocropping was I'd get the border region and apply a derivative filter so the
+y-derivative would be convolved against the top border. The strongest change should be when we go
+from the black image border to the lighter pixel values. I would then sum along the rows which if
+there was a strong activation at an edge would hopefully show up when I take the `argmax` of the
+aggregate. This works really well but does run into some issues. For one some images don't have
+black frame border from the negative, no worries we can check how strong our activation was and if
+it isn't strong enough then we just don't crop. The other issue I noticed is some of the negatives
+have two borders. One is black space between the slide and the scanner and then the other is between
+the border of the negative and the image itself. This latter border could be somewhat dirty leading
+to a less strong activation. Some possible solutions to make this more robust are run successive
+rounds of autocropping or convolve a gaussian/scale the aggregate border down to make that second
+border response greater, or just be smarter about a stupid initial precrop.
+
+
+## Better Colormapping
+
+In between implementing naive homography and homography with descriptors I thought that maybe
+normalizing the histogram would help with align for `emir.tif` because hopefully normalization would
+fix our aforementioned norm problem. This didn't work which was unfortunate but it did make the
+pictures look really nice so that's a plus. I used openCV's
+[CLAHE](https://en.wikipedia.org/wiki/Adaptive_histogram_equalization) implementation to achieve
+this.
+
+<>
+<Image src={matplotlib}  alt=""/>
+<figcaption class="text-center mt-4">
+Initial attempts of using the laplacian align with histogram normalization 
+</figcaption>
+</>
+

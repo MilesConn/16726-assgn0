@@ -17,15 +17,15 @@ function buildToc(headings: MarkdownHeading[]) {
   const toc: Heading[] = [];
   const parentHeadings = new Map();
   headings.forEach((h) => {
-    console.log("HEADING: ", h);
+    // console.log("HEADING: ", h);
     const heading = { ...h, subheadings: [] };
     parentHeadings.set(heading.depth, heading);
     // Change 2 to 1 if your markdown includes your <h1>
     if (heading.depth === 1) {
       toc.push(heading);
     } else {
-      console.log("Parent headings", parentHeadings);
-      console.log("WHAT WE GOT :", parentHeadings.get(heading.depth - 1));
+      // console.log("Parent headings", parentHeadings);
+      // console.log("WHAT WE GOT :", parentHeadings.get(heading.depth - 1));
       const item = parentHeadings.get(heading.depth - 1);
       if (item) {
         item.subheadings.push(heading);

@@ -17,21 +17,34 @@ import Footer from "../components/Footer.astro";
 // }
 
 // Set post here based on file name
-const entry = await getEntry("posts", "lorem_ipsum");
-const { Content, headings } = await entry.render();
+const entry = await getEntry("posts", "assgn0");
+const { Content, headings, remarkPluginFrontmatter } = await entry.render();
+console.log("REMAKR PLUGIN : ", remarkPluginFrontmatter);
 ---
 
 <Layout title="Assignment 0">
   <main class="flex flex-col items-center mb-8">
-    <h1 class="text-5xl font-bold my-8">Assignment 0</h1>
+    <div class="flex justify-center p-10">
+      <h1
+        class="font-bold text-center text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl"
+      >
+        {remarkPluginFrontmatter?.title}
+      </h1>
+    </div>
     <Prose class="w-full max-w-4xl mx-auto">
-      <>
+      <!-- <>
         <Image src={miles} alt="Framed photo of Miles" class="mb-0" />
         <figcaption class="text-center mt-4">A photo of the author</figcaption>
-      </>
+      </> -->
       <TableOfContents headings={headings} />
       <Content />
     </Prose>
   </main>
   <Footer />
 </Layout>
+
+<style>
+  .prose figcaption p {
+    @apply text-center;
+  }
+</style>
