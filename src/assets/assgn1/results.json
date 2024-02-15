@@ -1,0 +1,112 @@
+[
+    {
+        "name": "cathedral.jpg",
+        "r_shift": [
+            12,
+            3
+        ],
+        "g_shift": [
+            5,
+            2
+        ]
+    },
+    {
+        "name": "emir.tif",
+        "r_shift": [
+            65,
+            44
+        ],
+        "g_shift": [
+            49,
+            24
+        ]
+    },
+    {
+        "name": "harvesters.tif",
+        "r_shift": [
+            123,
+            14
+        ],
+        "g_shift": [
+            59,
+            17
+        ]
+    },
+    {
+        "name": "icon.tif",
+        "r_shift": [
+            89,
+            23
+        ],
+        "g_shift": [
+            41,
+            17
+        ]
+    },
+    {
+        "name": "lady.tif",
+        "r_shift": [
+            116,
+            12
+        ],
+        "g_shift": [
+            55,
+            9
+        ]
+    },
+    {
+        "name": "self_portrait.tif",
+        "r_shift": [
+            176,
+            37
+        ],
+        "g_shift": [
+            78,
+            29
+        ]
+    },
+    {
+        "name": "three_generations.tif",
+        "r_shift": [
+            111,
+            11
+        ],
+        "g_shift": [
+            52,
+            14
+        ]
+    },
+    {
+        "name": "train.tif",
+        "r_shift": [
+            87,
+            32
+        ],
+        "g_shift": [
+            42,
+            6
+        ]
+    },
+    {
+        "name": "turkmen.tif",
+        "r_shift": [
+            116,
+            28
+        ],
+        "g_shift": [
+            56,
+            21
+        ]
+    },
+    {
+        "name": "village.tif",
+        "r_shift": [
+            137,
+            22
+        ],
+        "g_shift": [
+            65,
+            12
+        ]
+    }
+]

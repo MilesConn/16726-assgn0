@@ -4,7 +4,7 @@ assignment: 1
 author: "Miles Conn"
 ---
 import { Image } from 'astro:assets';
-// import emir_align_with_better_color from "../../assets/assgn1/align_with_better_color.png "
+import ResultTable from "../../components/ResultTable.astro";
 import emir_better_colors from "../../assets/assgn1/align_with_better_color.png";
 import better_colors from "../../assets/assgn1/better_colors.png";
 import lady_better_colors from "../../assets/assgn1/better_output_v1.png";
@@ -25,6 +25,9 @@ import emir_3 from "../../assets/assgn1/emir_3.png";
 import cathedral_basic from "../../assets/assgn1/out_cathedral.jpg_cathedral_align.jpg";
 import train from "../../assets/assgn1/out_train.tif_cathedral_align.jpg";
 import emir_is_bad from "../../assets/assgn1/out_emir.tif_emir_is_bad.jpg";
+import village_basic from "../../assets/assgn1/out_village.tif_.jpg";
+import icon_basic from "../../assets/assgn1/out_icon.tif_.jpg";
+import results from "../../assets/assgn1/results.json";
 
 # Initial Implementation 
 
@@ -74,9 +77,26 @@ larger image. This would improve runtimes but I choose to stick with a small con
 <>
 <Image src={train}  alt=""/>
 <figcaption class="text-center mb-10">
-\`train.tif\` aligned using a gaussian pyramid and bruteforce shifts
+\`train.tif\` aligned using a gaussian pyramid and bruteforce shifts with L2 norm
 </figcaption>
 </>
+<>
+<Image src={village_basic}  alt=""/>
+<figcaption class="text-center mb-10">
+\`village.tif\` aligned using a gaussian pyramid and bruteforce shifts with L2 Norm
+</figcaption>
+</>
+
+<>
+<Image src={icon_basic}  alt=""/>
+<figcaption class="text-center mb-10">
+\`icon.tif\` aligned using a gaussian pyramid and bruteforce shifts L2 Norm
+</figcaption>
+</>
+
+Finally here are my results for all the shifts. 
+
+<ResultTable row_names={Object.keys(results[0])} content={results} />
 
 ## Brittleness 
 

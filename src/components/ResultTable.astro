@@ -1,0 +1,31 @@
+---
+interface Props {
+  row_names: string[];
+  content: Record<any, any>[];
+}
+
+const { row_names, content } = Astro.props;
+---
+
+<table>
+  <thead>
+    <tr>
+      {row_names.map((name) => <th>{name}</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    {
+      content.map((row) => (
+        <tr>
+          {row_names.map((name) => {
+            if (Array.isArray(row[name])) {
+              return <td>({row[name].toString()})</td>;
+            }
+
+            return <td>{row[name]}</td>;
+          })}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
