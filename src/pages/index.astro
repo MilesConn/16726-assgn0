@@ -6,7 +6,7 @@ import { getEntry } from "astro:content";
 import { Image } from "astro:assets";
 import TableOfContents from "../components/TableOfContents.astro";
 import Footer from "../components/Footer.astro";
-import emir from "../assets/assgn1/out_emir.tif_emir_bells.jpg";
+import Bear from "../assets/assgn2/bear.png";
 
 // export async function getStaticPaths() {
 //   const blogEntries = await getCollection("posts");
@@ -17,12 +17,11 @@ import emir from "../assets/assgn1/out_emir.tif_emir_bells.jpg";
 // }
 
 // Set post here based on file name
-const entry = await getEntry("posts", "assgn0");
+const entry = await getEntry("posts", "assgn2");
 const { Content, headings, remarkPluginFrontmatter } = await entry.render();
-console.log("REMAKR PLUGIN : ", remarkPluginFrontmatter);
 ---
 
-<Layout title="Assignment 1">
+<Layout title={`Assignment ${remarkPluginFrontmatter?.assignment}`}>
   <main class="flex flex-col items-center mb-8">
     <div class="flex justify-center p-10">
       <h1
@@ -32,13 +31,7 @@ console.log("REMAKR PLUGIN : ", remarkPluginFrontmatter);
       </h1>
     </div>
     <Prose class="w-full max-w-4xl mx-auto">
-      <>
-        <Image src={emir} alt="" class="mb-0" />
-        <figcaption class="text-center mt-4">
-          Emir composited using homography with swift descriptors,
-          auto-cropping, and histogram normalization
-        </figcaption>
-      </>
+      <Image src={Bear} alt="" class="mb-0" />
       <TableOfContents headings={headings} />
       <Content />
     </Prose>
