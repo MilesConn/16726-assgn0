@@ -1,0 +1,70 @@
+---
+title: "Cats!"
+assignment: 3
+author: "Miles Conn"
+---
+
+
+import Latex from "../../components/Latex.astro";
+import ILatex from "../../components/InlineLatex.astro";
+
+In general we can calculate the new dimensions give input dimension, kernel dimensions, stride, padding using the
+following formula 
+
+<Latex formula="\floor{(i_h - k_h + p_h + s_h) / s_h} \cross \floor{(i_w - k_w + p_w s_w)/ s_w} " />
+
+Given that our kernel is,`K=2` and our stride is,`S=2` and we want our output to be half the size
+then we have the following for an arbitrary dimension
+
+
+TODO: THIS FORMULA IS WRONG
+<Latex formula="\floor{(i_h - k_h + p_h + s_h) / s_h} \cross \floor{(i_w - k_w + p_w s_w)/ s_w} " />
+<Latex formula=`
+i / 2 &= \floor{(i - k + p + s) / s} \\
+&= \floor{(i - 4 + p + 2) / 2)} \\
+&= \floor{((i + p) / 2))} -1 \\
+\rightarrow p &= 1 \\
+` />
+
+To solve that `p=1` we need to case on parity of `i`.
+If `i` is even then `p=1` will get our desired outcome.
+If `i` is odd then `p=1,2` would work. 
+
+Therefore we take the intersection of possible results and get `p=1`.
+
+
+We can see then for an arbitrary dimension our padding should be 1 with the given kernel and stride amounts.
+
+For our first layer in our generator we don't want to apply any upsampling we essentially want to
+have our noise tiled across our layer. We also want to go from `1x1` to `4x4` so to do this we can
+just reverse our formula. 
+
+# We then do the math inreverse
+Stride 1, padding 3 also works?
+<Latex formula=`
+4i &= \floor{(i - k + p + s) / s} \\
+&= \floor{(i - 4 + p + 2) / 2)} \\
+&= \floor{((i + 2p) / 2))} -1 \\
+\rightarrow p &= 5 \\
+` />
+
+Logically 5 makes sense if we think of an array of length 6 
+
+because we know `i = 1`
+
+For generator we do the reverse. First we upsample which for an arbitrary dimension we have
+
+
+<Latex formula = `
+out\_dim = \floor{in\_dim * 2} `/>
+
+So therefore we want to set our padding in such a way to preserve this dimension. We also want to
+set our `stride` to be 1 as usually stride downsamples but here we want to maintin our dimension.
+
+<Latex formula=`
+i &= \floor{(i - k + 2p + s) / s} \\
+&= \floor{(i - 4 + 2p + s) / s)} \\
+
+2p + s &= 4, s \geq 1
+
+` />
