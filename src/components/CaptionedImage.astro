@@ -1,0 +1,15 @@
+---
+import { Image } from "astro:assets";
+
+export interface CaptionedImageProps {
+  src: String;
+  caption: string;
+}
+---
+
+<>
+  <Image src={Astro.props.src} alt={Astro.props.caption} />
+  <figcaption class="text-center mb-10">
+    {Astro.props.caption}
+  </figcaption>
+</>

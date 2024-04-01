@@ -1,70 +1,380 @@
 ---
-title: "Cats!"
+title: "GAN Cats!"
 assignment: 3
 author: "Miles Conn"
 ---
 
-
 import Latex from "../../components/Latex.astro";
 import ILatex from "../../components/InlineLatex.astro";
+import CaptionedImage from "../../components/CaptionedImage.astro";
+
+import A from "../../assets/assgn3/DC_Discriminator_w_Deluxe_Cat2Cat.png";
+import B from "../../assets/assgn3/DC_Discriminator_w_Deluxe_w_Cycleloss_Cat2Cat.png";
+import C from "../../assets/assgn3/DC_w_Cycleloss_w_Deluxe_Apple2Orange.png";
+import D from "../../assets/assgn3/DC_w_Deluxe_Apple2Orange.png";
+import E from "../../assets/assgn3/DC_w_Deluxe_w_Cycleloss_Apple2Orange.png";
+import F from "../../assets/assgn3/Patch_Discriminator_w_Deluxe_Apple2Orange.png";
+import G from "../../assets/assgn3/Patch_Discriminator_w_Deluxe_Cat2Cat.png";
+import H from "../../assets/assgn3/Patch_Discriminator_w_Deluxe_w_Cycleloss_Cat2Cat.png";
+import I from "../../assets/assgn3/Patch_Discriminator_w_Deluxe_w_Cycleloss_Apple2Orange.png";
+
+import J from "../../assets/assgn3/Basic.png";
+import K from "../../assets/assgn3/Basic_w_Diffaug.png";
+import L from "../../assets/assgn3/Deluxe.png";
+import M from "../../assets/assgn3/Deluxe_w_Diffaug.png";
+
+import VanillaBasicDiffAugReal3200 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_diffaug_real-003200.png";
+import VanillaBasicDiffAugSample3200 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_diffaug_sample-003200.png";
+
+import VanillaBasicDiffAugReal6400 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_diffaug_real-006400.png";
+import VanillaBasicDiffAugSample6400 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_diffaug_sample-006400.png";
+
+import VanillaBasicReal3200 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_real-003200.png";
+import VanillaBasicSample3200 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_sample-003200.png";
+
+import VanillaBasicSample6400 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_sample-006400.png";
+import VanillaBasicReal6400 from "../../assets/assgn3/vanilla_outputs/vanilla_basic_real-006400.png";
+
+import VanillaDeluxeDiffAugSample3200 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_diffaug_sample-003200.png";
+import VanillaDeluxeDiffAugReal3200 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_diffaug_real-003200.png";
+
+import VanillaDeluxeDiffAugSample6400 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_diffaug_sample-006400.png";
+import VanillaDeluxeDiffAugReal6400 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_diffaug_real-006400.png";
+
+
+import VanillaDeluxeSample3200 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_sample-003200.png";
+import VanillaDeluxeReal3200 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_real-003200.png";
+
+import VanillaDeluxeSample6400 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_sample-006400.png";
+import VanillaDeluxeReal6400 from "../../assets/assgn3/vanilla_outputs/vanilla_deluxe_real-006400.png";
+
+import WasserteinReal3200 from "../../assets/assgn3/vanilla_outputs/wassertein_real-003200.png";
+import WasserteinSample3200 from "../../assets/assgn3/vanilla_outputs/wassertein_sample-003200.png";
+
+import WasserteinSample6400 from "../../assets/assgn3/vanilla_outputs/wassertein_sample-006400.png";
+import WasserteinReal6400 from "../../assets/assgn3/vanilla_outputs/wassertein_real_006400.png";
+
+import Apple2OrangeDcCycleSample5000XY from "../../assets/assgn3/cyclegans/apple2_orange_dc_cycle_sample-005000-X-Y.png";
+import Apple2OrangeDcCycleSample5000YX from "../../assets/assgn3/cyclegans/apple2_orange_dc_cycle_sample-005000-Y-X.png";
+import Apple2OrangeDcCycleSample10000XY from "../../assets/assgn3/cyclegans/apple2_orange_dc_cycle_sample-010000-X-Y.png";
+import Apple2OrangeDcCycleSample10000YX from "../../assets/assgn3/cyclegans/apple2_orange_dc_cycle_sample-010000-Y-X.png";
+
+import Apple2OrangeDcSample5000XY from "../../assets/assgn3/cyclegans/apple2_orange_dc_sample-005000-X-Y.png";
+import Apple2OrangeDcSample5000YX from "../../assets/assgn3/cyclegans/apple2_orange_dc_sample-005000-Y-X.png";
+import Apple2OrangeDcSample10000XY from "../../assets/assgn3/cyclegans/apple2_orange_dc_sample-010000-X-Y.png";
+import Apple2OrangeDcSample10000YX from "../../assets/assgn3/cyclegans/apple2_orange_dc_sample-010000-Y-X.png";
+
+import Apple2OrangePatchCycleSample5000XY from "../../assets/assgn3/cyclegans/apple2_orange_patch_cycle_sample-005000-X-Y.png";
+import Apple2OrangePatchCycleSample5000YX from "../../assets/assgn3/cyclegans/apple2_orange_patch_cycle_sample-005000-Y-X.png";
+import Apple2OrangePatchCycleSample10000XY from "../../assets/assgn3/cyclegans/apple2_orange_patch_cycle_sample-010000-X-Y.png";
+import Apple2OrangePatchCycleSample10000YX from "../../assets/assgn3/cyclegans/apple2_orange_patch_cycle_sample-010000-Y-X.png";
+
+import Apple2OrangePatchSample5000XY from "../../assets/assgn3/cyclegans/apple2_orange_patch_sample-005000-X-Y.png";
+import Apple2OrangePatchSample5000YX from "../../assets/assgn3/cyclegans/apple2_orange_patch_sample-005000-Y-X.png";
+import Apple2OrangePatchSample9900XY from "../../assets/assgn3/cyclegans/apple2_orange_patch_sample-009900-X-Y.png";
+import Apple2OrangePatchSample9900YX from "../../assets/assgn3/cyclegans/apple2_orange_patch_sample-009900-Y-X.png";
+
+import DeluxeDcCycleSample5000XY from "../../assets/assgn3/cyclegans/deluxe_dc_cycle_sample-005000-X-Y.png";
+import DeluxeDcCycleSample5000YX from "../../assets/assgn3/cyclegans/deluxe_dc_cycle_sample-005000-Y-X.png";
+import DeluxeDcCycleSample10000XY from "../../assets/assgn3/cyclegans/deluxe_dc_cycle_sample-010000-X-Y.png";
+import DeluxeDcCycleSample10000YX from "../../assets/assgn3/cyclegans/deluxe_dc_cycle_sample-010000-Y-X.png";
+
+import DeluxeInstanceDcSample5000XY from "../../assets/assgn3/cyclegans/deluxe_instance_dc_sample-005000-X-Y.png";
+import DeluxeInstanceDcSample5000YX from "../../assets/assgn3/cyclegans/deluxe_instance_dc_sample-005000-Y-X.png";
+import DeluxeInstanceDcSample10000XY from "../../assets/assgn3/cyclegans/deluxe_instance_dc_sample-010000-X-Y.png";
+import DeluxeInstanceDcSample10000YX from "../../assets/assgn3/cyclegans/deluxe_instance_dc_sample-010000-Y-X.png";
+
+import DeluxeInstancePatchCycleSample5000XY from "../../assets/assgn3/cyclegans/deluxe_instance_patch_cycle_sample-005000-X-Y.png";
+import DeluxeInstancePatchCycleSample5000YX from "../../assets/assgn3/cyclegans/deluxe_instance_patch_cycle_sample-005000-Y-X.png";
+import DeluxeInstancePatchCycleSample10000XY from "../../assets/assgn3/cyclegans/deluxe_instance_patch_cycle_sample-010000-X-Y.png";
+import DeluxeInstancePatchCycleSample10000YX from "../../assets/assgn3/cyclegans/deluxe_instance_patch_cycle_sample-010000-Y-X.png";
+
+import DeluxeInstancePatchSample5000XY from "../../assets/assgn3/cyclegans/deluxe_instance_patch_sample-005000-X-Y.png";
+import DeluxeInstancePatchSample5000YX from "../../assets/assgn3/cyclegans/deluxe_instance_patch_sample-005000-Y-X.png";
+import DeluxeInstancePatchSample10000XY from "../../assets/assgn3/cyclegans/deluxe_instance_patch_sample-010000-X-Y.png";
+import DeluxeInstancePatchSample10000YX from "../../assets/assgn3/cyclegans/deluxe_instance_patch_sample-010000-Y-X.png";
+
+import WassersteinLoss from "../../assets/assgn3/Wassertein_w_Deluxe_w_Diffaug.png";
+
+# Intro
+
+## Technical Difficulties
+
+I had some technical difficulties with this assignment as it was not clear to me that when you request EC2 quota increases you should request vCPUs needed as opposed to 
+number of instances. To get around this I converted the code to run on the M1 GPU if possible. Similar to CUDA a lot of my code had the following 
+
+```python
+if torch.cuda.is_available():
+    G.cuda()
+    D.cuda()
+    print("Models moved to GPU.")
+elif torch.device("mps"):
+    mps_device = torch.device("mps")
+    G.to(mps_device)
+    D.to(mps_device)
+    print("Models moved to M1 GPU.")
+```
+
+the main difficulty came with getting the dataloader to play nicely. No matter how I set my `num_workers` or `parallel` strategy I could not get the dataloader to execute with parallelsim. 
+I finally settled on the following 
+
+```python 
+def custom_collate(batch):
+    batch = torch.stack(batch, 0)
+
+    if torch.backends.mps.is_available():
+        batch = batch.to(torch.device("mps"))
+    return batc
+
+dloader = DataLoader(
+    dataset=dataset,
+    batch_size=opts.batch_size,
+    shuffle=True,
+    num_workers=0 if torch.backends.mps.is_available() else opts.num_workers,
+    collate_fn=custom_collate,
+```
+
+where the `custom_collate` handles sending the tensors to GPU memory. This could also be handled in the transformation passes but it's messier as one needs to implement a custom transform.
+
+## Data Augmentation
+
+To prevent overfitting of the discriminator we implement data augmentation that augments our real data. I chose to go with a random transform in my dataloader that was either
+
+1. RandomHorizontalFlip
+2. RandomCrop w/ Padding
+3. RandomResize w/ CenterCrop
+
+For 2,3 the additional operation was needed to make the tensors all the same size when they get put in GPU memory. With `p=.8` one of these transformations were done but in retrospect I should've performed combinatorial operations 
+to get more varied dataset from so few real images.
+
+A more difficult dataset for the discriminator not only prevents overfitting but also most likely 'slows' its training which helps prevent the diminishing gradients when the discriminator and generator are in different stages of training, [see Wasserstein Loss for more discussion of this](#wasserstein-loss).
+
+## Padding
 
 In general we can calculate the new dimensions give input dimension, kernel dimensions, stride, padding using the
-following formula 
+following formula
 
-<Latex formula="\floor{(i_h - k_h + p_h + s_h) / s_h} \cross \floor{(i_w - k_w + p_w s_w)/ s_w} " />
+<Latex formula="D_{out} = \floor{\frac{D_{in} + 2 \times padding - kernel\_size  + stride}{stride}} " />
 
-Given that our kernel is,`K=2` and our stride is,`S=2` and we want our output to be half the size
+Given that our kernel is,'K=2' and our stride is,'S=2' and we want our output to be half the size
 then we have the following for an arbitrary dimension
 
+<Latex formula={
+"\\begin{aligned}" +
+"i / 2 &= \\lfloor{(i - k + p + s) / s}\\rfloor \\\\" +
+"&= \\lfloor{(i - 2 + p + 2) / 2}\\rfloor \\\\" +
+"&= \\lfloor{((i + p) / 2)}\\rfloor \\\\" +
+"\\rightarrow p &= 1" +
+"\\end{aligned}"
+} />
 
-TODO: THIS FORMULA IS WRONG
-<Latex formula="\floor{(i_h - k_h + p_h + s_h) / s_h} \cross \floor{(i_w - k_w + p_w s_w)/ s_w} " />
-<Latex formula=`
-i / 2 &= \floor{(i - k + p + s) / s} \\
-&= \floor{(i - 4 + p + 2) / 2)} \\
-&= \floor{((i + p) / 2))} -1 \\
-\rightarrow p &= 1 \\
-` />
+To solve that 'p=1' we need to case on parity of 'i'.
+If 'i' is even then 'p=1,0' will get our desired outcome.
+If 'i' is odd then 'p=1' is the only soluton.
 
-To solve that `p=1` we need to case on parity of `i`.
-If `i` is even then `p=1` will get our desired outcome.
-If `i` is odd then `p=1,2` would work. 
-
-Therefore we take the intersection of possible results and get `p=1`.
-
+Therefore we take the intersection of possible results and get 'p=1'.
 
 We can see then for an arbitrary dimension our padding should be 1 with the given kernel and stride amounts.
 
 For our first layer in our generator we don't want to apply any upsampling we essentially want to
-have our noise tiled across our layer. We also want to go from `1x1` to `4x4` so to do this we can
-just reverse our formula. 
 
-# We then do the math inreverse
-Stride 1, padding 3 also works?
-<Latex formula=`
-4i &= \floor{(i - k + p + s) / s} \\
-&= \floor{(i - 4 + p + 2) / 2)} \\
-&= \floor{((i + 2p) / 2))} -1 \\
-\rightarrow p &= 5 \\
-` />
+# Results
 
-Logically 5 makes sense if we think of an array of length 6 
+## Vanilla Gan
 
-because we know `i = 1`
+### Basic Data Augmentation 
+#### w/ Diff Augmented 
+<CaptionedImage src={J} caption=""/>
 
-For generator we do the reverse. First we upsample which for an arbitrary dimension we have
+<CaptionedImage src={VanillaBasicDiffAugReal3200} caption="Real Input @ 3200 Iterations"/>
+<CaptionedImage src={VanillaBasicDiffAugSample3200} caption="Sample Output @ 3200 Iterations"/>
+<CaptionedImage src={VanillaBasicDiffAugReal6400} caption="Real Input @ 6400 Iterations"/>
+<CaptionedImage src={VanillaBasicDiffAugSample6400} caption="Sample Output @ 6400 Iterations"/>
+
+#### w/o Diff Augmented 
+<CaptionedImage src={K} caption=""/>
 
 
-<Latex formula = `
-out\_dim = \floor{in\_dim * 2} `/>
+<CaptionedImage src={VanillaBasicReal3200} caption="Real Input @ 3200 Iterations"/>
+<CaptionedImage src={VanillaBasicSample3200} caption="Sample Output @ 3200 Iterations"/>
+<CaptionedImage src={VanillaBasicReal6400} caption="Real Input @ 6400 Iterations"/>
+<CaptionedImage src={VanillaBasicSample6400} caption="Sample Output @ 6400 Iterations"/>
 
-So therefore we want to set our padding in such a way to preserve this dimension. We also want to
-set our `stride` to be 1 as usually stride downsamples but here we want to maintin our dimension.
+### Deluxe Data Augmentation
+#### w/ Diff Augmented 
+<CaptionedImage src={L} caption=""/>
 
-<Latex formula=`
-i &= \floor{(i - k + 2p + s) / s} \\
-&= \floor{(i - 4 + 2p + s) / s)} \\
+<CaptionedImage src={VanillaDeluxeDiffAugReal3200} caption="Real Input @ 3200 Iterations"/>
+<CaptionedImage src={VanillaDeluxeDiffAugSample3200} caption="Sample Output @ 3200 Iterations"/>
+<CaptionedImage src={VanillaDeluxeDiffAugReal6400} caption="Real Input @ 6400 Iterations"/>
+<CaptionedImage src={VanillaDeluxeDiffAugSample6400} caption="Sample Output @ 6400 Iterations"/>
 
-2p + s &= 4, s \geq 1
+#### w/o Diff Augmented 
+<CaptionedImage src={M} caption=""/>
 
-` />
+<CaptionedImage src={VanillaDeluxeReal3200} caption="Real Input @ 3200 Iterations"/>
+<CaptionedImage src={VanillaDeluxeSample3200} caption="Sample Output @ 3200 Iterations"/>
+<CaptionedImage src={VanillaDeluxeReal6400} caption="Real Input @ 6400 Iterations"/>
+<CaptionedImage src={VanillaDeluxeSample6400} caption="Sample Output @ 6400 Iterations"/>
+
+## Vanila Gan Discussion
+
+As can be seen from the results deluxe data preprocessing leads to more diversity in output. In addition, differentiable augmentation leads to better results with fewer artifacts. 
+
+In fact, the deluxe data augmentation is practically necessary as you can see in basic @ 3200 iterations there's basically only noise. The deluxe data augmentation leads to faster convergence. This makes sense as it prevents the models from overfitting and creates more diverse data from a smaller dataset.
+
+My loss plots are a little concerning as it seems my discriminators are too easily differentiating between real and fake imgages potentially leading to diminishing gradients. I could not get rid of this and I'm unsure why this was the case. As will be discussed later Wasserstein loss attempts to fix this.
+
+## Cycle Gan
+### Apples2Oranges
+#### DC Discriminator
+##### w/ Cycleloss
+<CaptionedImage src={C} caption=""/>
+
+
+<CaptionedImage src={Apple2OrangeDcCycleSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangeDcCycleSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={Apple2OrangeDcCycleSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangeDcCycleSample10000YX} caption="10000 iterations of Y -> X"/>
+
+##### w/o Cycleloss
+<CaptionedImage src={D} caption=""/>
+
+<CaptionedImage src={Apple2OrangeDcSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangeDcSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={Apple2OrangeDcSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangeDcSample10000YX} caption="10000 iterations of Y -> X"/>
+
+#### Patch Discriminator
+##### w/ Cycleloss
+<CaptionedImage src={I} caption=""/>
+
+
+<CaptionedImage src={Apple2OrangePatchCycleSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangePatchCycleSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={Apple2OrangePatchCycleSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangePatchCycleSample10000YX} caption="10000 iterations of Y -> X"/>
+
+##### w/o Cycleloss
+<CaptionedImage src={F} caption=""/>
+
+<CaptionedImage src={Apple2OrangePatchSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangePatchSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={Apple2OrangePatchSample9900XY} caption="9900 iterations of X -> Y"/>
+<CaptionedImage src={Apple2OrangePatchSample9900YX} caption="9900 iterations of Y -> X"/>
+
+### Cat2Cat
+
+#### DC Discriminator
+##### w/ Cycleloss
+<CaptionedImage src={B} caption=""/>
+
+<CaptionedImage src={DeluxeDcCycleSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeDcCycleSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={DeluxeDcCycleSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeDcCycleSample10000YX} caption="10000 iterations of Y -> X"/>
+
+##### w/o Cycleloss
+<CaptionedImage src={A} caption=""/>
+
+<CaptionedImage src={DeluxeInstanceDcSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstanceDcSample5000YX} caption="5000 iterations of Y -> Y"/>
+<CaptionedImage src={DeluxeInstanceDcSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstanceDcSample10000YX} caption="10000 iterations of Y -> X"/>
+
+#### Patch Discriminator
+##### w/ Cycleloss
+<CaptionedImage src={H} caption=""/>
+
+<CaptionedImage src={DeluxeInstancePatchCycleSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstancePatchCycleSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={DeluxeInstancePatchCycleSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstancePatchCycleSample10000YX} caption="10000 iterations of Y -> X"/>
+##### w/o Cycleloss
+<CaptionedImage src={G} caption=""/>
+
+<CaptionedImage src={DeluxeInstancePatchSample5000XY} caption="5000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstancePatchSample5000YX} caption="5000 iterations of Y -> X"/>
+<CaptionedImage src={DeluxeInstancePatchSample10000XY} caption="10000 iterations of X -> Y"/>
+<CaptionedImage src={DeluxeInstancePatchSample10000YX} caption="10000 iterations of Y -> X"/>
+
+### Discussion
+
+The results have not been cherry picked and there are instances of model collapse in the above images. While the losses overall look very bad the images aren't terrible and if I had cherry picked the results I could've gotten better images. Without cycle consistency loss the models have a tendency to absolutely fall apart. This isn't consistent behaviour, but cycle loss definitely helps prevent this. In addition, we can 
+see cycleloss leads to better generator loss where it more monotonically decreases. 
+
+Another interesting result I found is that my Y->X results seem to be better than my X->Y. This is confusing as the code is symmetric for them but I think this is most apparent for the cats. It could be because the X cats are simpler than the black and white cats but I found these results confusing. In fact, as I look at some of the images, especially with the cats Y->X I get the impression that the output could be really good with slight color space changess. A similar thing happens in 10,000 iterations X->Y Patch Discrimnator w/Cycleloss. Some of the outputted cats are correct but others appear in the absolute wrong colorspace. 
+
+Overall, the patch discriminator performs better than the DC Discriminator as can be seen in Apples2Oranges where, even with Cycleloss Consistency, the DC Discriminator doesn't display the Generator loss pattern that we'd like to see - decreasing and converging. 
+
+# Bells & Whistles
+
+## Wasserstein Loss
+
+A known issue with GANs is they're notably unstable. For instance, if an optimal discriminator is achieved before the generator then the gradients for the generator dimish and the generator learns nothing. The origanl GAN paper suggests instead of calculating loss as
+
+<Latex formula='\log(1 - D(G(z^{(i)})' />
+
+to instead do
+
+<Latex formula='\log(D(G(z^{(i)})' />
+
+However, our new loss function has remarkably high variance. One proposal to fix this is to add noise to generated images to stabilize the model. However, instead of adding noise we could instead use a new cost function - Wasserstein distance that has a smoother gradient everywhere.
+
+The goal of WGANs is to learn no matter how the generator is performing. This circumnavigates the issue that it's much easier, and probable, to develop a good discriminator versus a good generator.
+
+The Wasserstein paper suggests using the Earth-Mover distance or Wasserstein-1 to measure divergence or loss
+
+<Latex formula='W(\mathbb{P}_r, \mathbb{P}_g) = \inf_{\gamma \in \prod (\mathbb{P}_r, \mathbb{P}_g)} \mathbb{E}_{(x,y)\sim\gamma} [|| x- y||]'/>
+
+where <ILatex formula='\prod (\mathbb{P}_r, \mathbb{P}_g)' /> denotes teh set of all joint distributions <ILatex formula='\gamma(x,y)'/> whose marginals are respectively <ILatex formula='\mathbb{P}_r, \mathbb{P}_g'/> To translate
+it back into the nomenclature of EM-distance, <ILatex formula='\gamma(x,y)' /> indicates how much "mass" must be moved `x` to `y` in order to transform the distributions from one to the other, and the EM distance is the optimal cost of the transport plan.
+Note, `inf` is the infinimum.
+
+However, the above formula is intractable, due to the infimum, therefore we use the Kantorovich-Rubinstein duality to get the following for our loss function 
+
+<Latex formula='W(\mathbb{P}_r,\mathbb{P}_g) = \sup_{||f||_L \leq 1} \mathbb{E}_{x \sim \mathbb{P}_r} [f(x)] - \mathbb{E}_{x\sim \mathbb{P}_\theta } [ f(x) ]'/>
+
+Where the supermum is taken over all 1-Lipschitz functions <ILatex formula='f : \mathcal{X} \rightarrow \mathbb{R}'/>. In practice, this can be simplified to 
+
+<Latex formula='\max_{w \in \mathcal{W}} \mathbb{E}_{x \sim \mathbb{P}_r} [f_w(x)] - \mathbb{E}_{z\sim p(z) } [ f_w(g_\theta(z)) ]'/>
+
+which can then be approximated via backpropogation up to a mulitplicative constant.
+
+We can represent this with the following psuedo code 
+
+```python
+for _ in range(n_critics):
+    D_fake_loss = mean(D(fake_images))
+    D_real_loss = mean(D(real_images))
+    D_total_loss = D_fake_loss - D_real_loss
+
+for parameters in D:
+    # Enforce lipschitz constraint
+    p.clamp(-0.01, 0.01)
+
+G_loss = -mean(D(fake_images))
+```
+Note in the paper they update their discriminator multiple times per a step. 
+
+The clamping process is a working, albeit poor method, to  enforce the Lipschitz constraint and force the weights to fit a fixed back thus enforcing <ILatex formula='\mathcal{W}' /> to be compact.
+
+The hopeful end result is less instability during training. 
+
+
+## Results
+
+Note, in practice there is hyper parameter tuning controlling both the mixture of real and fake images during the discriminator training step, as well as normalization of the backprop. I chose to forego these which might be part of the reason the results are the way they are. 
+
+
+<CaptionedImage src={WassersteinLoss} caption=""/>
+<CaptionedImage src={WasserteinReal3200} caption="Real Input @ 3200 Iterations"/>
+<CaptionedImage src={WasserteinSample3200} caption="Sample Output @ 3200 Iterations"/>
+<CaptionedImage src={WasserteinReal6400} caption="Real Input @ 6400 Iterations"/>
+<CaptionedImage src={WasserteinSample6400} caption="Sample Output @ 6400 Iterations"/>
+
+### Discussion
+
+The Wasserstein loss graph doesn\'t look great
+but it's hard to say what part of this is inherent to GANs. I will say the results actually look quite good despite the artificating. I'm sure 
+with further hyperparameter tuning as well as doing the mix of critics I could've improved the results.
