@@ -17,7 +17,7 @@ import CatGif from "../assets/assgn3/cat_gif.gif";
 // }
 
 // Set post here based on file name
-const entry = await getEntry("posts", "assgn3");
+const entry = await getEntry("posts", "assgn4");
 const { Content, headings, remarkPluginFrontmatter } = await entry.render();
 ---
 
@@ -33,10 +33,10 @@ const { Content, headings, remarkPluginFrontmatter } = await entry.render();
             </div>
             <Prose class="mx-auto w-full max-w-4xl">
                 <>
-                    <Image src={CatGif} alt="" class="mb-0" />
-                    <figcaption class="mb-10 text-center">
-                        A gif showing the unstable training of DCGan
-                    </figcaption>
+                    <!-- <Image src={CatGif} alt="" class="mb-0" /> -->
+                    <!-- <figcaption class="mb-10 text-center"> -->
+                    <!-- A gif showing the unstable training of DCGan -->
+                    <!-- </figcaption> -->
                     <TableOfContents headings={headings} />
                     <Content />
                 </>

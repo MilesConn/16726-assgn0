@@ -1,13 +1,15 @@
 ---
 import { Image } from "astro:assets";
 
-export interface CaptionedImageProps {
-  src: String;
+export interface Props {
+  // TODO: fix this
+  src: Parameters<typeof Image>["0"]["src"];
   caption: string;
 }
 ---
 
 <>
+  <!-- @ts-ignore -->
   <Image src={Astro.props.src} alt={Astro.props.caption} />
   <figcaption class="text-center mb-10">
     {Astro.props.caption}

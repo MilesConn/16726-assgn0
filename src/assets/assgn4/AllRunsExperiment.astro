@@ -1,0 +1,192 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn4/experiment9/*.{jpeg,jpg,png,gif}",
+);
+
+const sourceImages = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn4/sources/style/*.{jpeg,jpg,png,gif}",
+);
+const contentImages = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn4/sources/content/*.{jpeg,jpg,png,gif}",
+);
+
+const filePaths = Object.keys(images);
+const sourceImagePaths = Object.keys(sourceImages);
+const contentImagePaths = Object.keys(contentImages);
+
+function parseFilePath(filePath: string): {
+    content: string;
+    style: string;
+    iteration: number;
+    initialization: string;
+    filePath: string;
+} {
+    const oldFilePath = filePath;
+    const parts = filePath.split("_");
+    const content = parts[0];
+    const iteration = parseInt(parts[parts.length - 2]);
+    const initialization = parts[parts.length - 1].replace(".jpeg", "");
+    const style = parts.slice(1, parts.length - 2).join("_");
+    return { content, style, iteration, initialization, filePath: oldFilePath };
+}
+
+const parsedData = filePaths.map(parseFilePath);
+const contentInitializationData = parsedData.filter(
+    (data) =>
+        data.iteration === 300 &&
+        data.initialization === "Content Initilization",
+);
+const noiseInitializationData = parsedData.filter(
+    (data) =>
+        data.iteration === 300 &&
+        data.initialization === "Noise Initialization",
+);
+const contentOptions = [...new Set(parsedData.map((data) => data.content))];
+const styleOptions = [...new Set(parsedData.map((data) => data.style))];
+---
+
+<h2>Content Initialization</h2>
+<table>
+    <thead>
+        <tr>
+            <!-- <th>Content \ Style</th> -->
+            <th></th>
+            {
+                styleOptions.map((style) => (
+                    <th>
+                        {sourceImagePaths.map((imagePath) => {
+                            if (imagePath.includes(style)) {
+                                return (
+                                    <Image
+                                        src={sourceImages[imagePath]()}
+                                        alt={style}
+                                    />
+                                );
+                            }
+                        })}
+                    </th>
+                ))
+            }
+        </tr>
+    </thead>
+    <tbody>
+        {
+            contentOptions.map((content) => (
+                <tr>
+                    <td>
+                        {contentImagePaths.map((imagePath) => {
+                            const contentName = content
+                                .split("/")
+                                .findLast((_) => true);
+                            if (
+                                contentName &&
+                                imagePath.includes(contentName)
+                            ) {
+                                return (
+                                    <Image
+                                        src={contentImages[imagePath]()}
+                                        alt={content}
+                                    />
+                                );
+                            }
+                        })}
+                    </td>
+                    {styleOptions.map((style) => {
+                        const image = contentInitializationData.find(
+                            (data) =>
+                                data.content === content &&
+                                data.style === style,
+                        );
+                        return (
+                            <td>
+                                {image ? (
+                                    <Image
+                                        src={images[image.filePath]()}
+                                        alt={`${content}_${style}_300_Content_Initialization`}
+                                    />
+                                ) : (
+                                    "N/A"
+                                )}
+                            </td>
+                        );
+                    })}
+                </tr>
+            ))
+        }
+    </tbody>
+</table>
+
+<h2>Noise Initialization</h2>
+<table>
+    <thead>
+        <tr>
+            <!-- <th>Content \ Style</th> -->
+            <th></th>
+            {
+                styleOptions.map((style) => (
+                    <th>
+                        {sourceImagePaths.map((imagePath) => {
+                            if (imagePath.includes(style)) {
+                                return (
+                                    <Image
+                                        src={sourceImages[imagePath]()}
+                                        alt={style}
+                                    />
+                                );
+                            }
+                        })}
+                    </th>
+                ))
+            }
+        </tr>
+    </thead>
+    <tbody>
+        {
+            contentOptions.map((content) => (
+                <tr>
+                    <td>
+                        {contentImagePaths.map((imagePath) => {
+                            const contentName = content
+                                .split("/")
+                                .findLast((_) => true);
+                            if (
+                                contentName &&
+                                imagePath.includes(contentName)
+                            ) {
+                                return (
+                                    <Image
+                                        src={contentImages[imagePath]()}
+                                        alt={content}
+                                    />
+                                );
+                            }
+                        })}
+                    </td>
+
+                    {styleOptions.map((style) => {
+                        const image = noiseInitializationData.find(
+                            (data) =>
+                                data.content === content &&
+                                data.style === style,
+                        );
+                        return (
+                            <td>
+                                {image ? (
+                                    <Image
+                                        src={images[image.filePath]()}
+                                        alt={`${content}_${style}_300_Noise_Initialization`}
+                                    />
+                                ) : (
+                                    "N/A"
+                                )}
+                            </td>
+                        );
+                    })}
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

@@ -1,0 +1,71 @@
+---
+import type { ImageMetadata } from "astro";
+import { imageMetadata } from "astro/assets/utils";
+import { Image } from "astro:assets";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn4/experiment4/*.{jpeg,jpg,png,gif}",
+);
+
+const filePaths = Object.keys(images);
+
+function parseFilePath(filePath: string): {
+    iteration: number;
+    noiseType: number;
+} {
+    const parts = filePath.split("_");
+    const iteration = parseInt(parts[1]);
+    const noiseType = parseInt(
+        parts[2].replace("noise", "").replace(".jpeg", ""),
+    );
+    return { iteration, noiseType };
+}
+
+const parsedData = filePaths.map(parseFilePath);
+const iterations = Array.from(
+    new Set(parsedData.map((data) => data.iteration)),
+).sort((a, b) => a - b);
+const noiseTypes = Array.from(
+    new Set(parsedData.map((data) => data.noiseType)),
+).sort((a, b) => a - b);
+---
+
+<div class="overflow-x-auto not-prose">
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th class="">Noise Type</th>
+                {iterations.map((iteration) => <th class="">{iteration}</th>)}
+            </tr>
+        </thead>
+        <tbody>
+            {
+                noiseTypes.map((noiseType) => (
+                    <tr>
+                        <td class="">Noise {noiseType + 1}</td>
+                        {iterations.map((iteration) => {
+                            const filePath = filePaths.find(
+                                (path) =>
+                                    path.includes(`_${iteration}_`) &&
+                                    path.includes(`_noise${noiseType}`),
+                            );
+                            return (
+                                <td class="">
+                                    {filePath ? (
+                                        <Image
+                                            src={images[filePath]()}
+                                            class="min-w-[250px] min-h-[250px] object-cover"
+                                            alt={`Iteration ${iteration} - Noise ${noiseType + 1}`}
+                                        />
+                                    ) : (
+                                        "N/A"
+                                    )}
+                                </td>
+                            );
+                        })}
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>

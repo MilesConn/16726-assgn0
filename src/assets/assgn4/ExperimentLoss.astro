@@ -1,0 +1,58 @@
+---
+interface Props {
+    data: { name: string; values: any }[];
+    parseType?: "content" | "style";
+}
+
+const parseType = Astro.props.parseType ?? "content";
+
+function parseContentLoss(values: string): number[] {
+    const contentLoss: number[] = [];
+    const lines = values.split("\n");
+
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i]) {
+            const lossLine = lines[i].trim();
+            const splitLine = lossLine.split(":");
+            if (splitLine.length == 3) {
+                if (parseType == "content") {
+                    const loss = parseFloat(splitLine[2].trim());
+                    contentLoss.push(loss);
+                } else {
+                    const loss = parseFloat(splitLine[1].trim());
+                    contentLoss.push(loss);
+                }
+            }
+        }
+    }
+
+    return contentLoss;
+}
+
+const iterations = [50, 100, 150, 200, 250, 300];
+const parsedData = Astro.props.data.map((item) => ({
+    name: item.name,
+    contentLoss: parseContentLoss(item.values),
+}));
+---
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            {iterations.map((iteration) => <th>{iteration}</th>)}
+        </tr>
+    </thead>
+    <tbody>
+        {
+            parsedData.map((item) => (
+                <tr>
+                    <td>{item.name}</td>
+                    {item.contentLoss.map((loss) => (
+                        <td>{loss || "N/A"}</td>
+                    ))}
+                </tr>
+            ))
+        }
+    </tbody>
+</table>
