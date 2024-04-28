@@ -1,0 +1,61 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image, imageConfig } from "astro:assets";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn5/draw/*.{jpeg,jpg,png,gif}",
+);
+
+const originalImages = [
+    // "0_data.png",
+    "1_data.png",
+    "2_data.png",
+    "3_data.png",
+    "4_data.png",
+    "5_data.png",
+    "6_data.png",
+    "7_data.png",
+    "8_data.png",
+];
+
+const pathPrefix = "/src/assets/assgn5/draw/";
+
+function getImagePath(originalImage: string, iteration: number): string {
+    const [index] = originalImage.split("_");
+    return `${pathPrefix}${index}_stylegan_w+_0.2_${iteration}.png`;
+}
+---
+
+<div style="overflow-x: auto; not-prose">
+    <table>
+        <tbody>
+            <tr>
+                {
+                    originalImages.map((originalImage) => (
+                        <td>
+                            <Image
+                                src={images[pathPrefix + originalImage]()}
+                                alt={originalImage}
+                            />
+                        </td>
+                    ))
+                }
+            </tr>
+            <tr>
+                {
+                    originalImages.map((originalImage) => {
+                        const imagePath = getImagePath(originalImage, 1000);
+                        return (
+                            <td>
+                                <Image
+                                    src={images[imagePath]()}
+                                    alt={imagePath}
+                                />
+                            </td>
+                        );
+                    })
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>

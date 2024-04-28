@@ -1,0 +1,111 @@
+---
+title: "Cat Photo Editing"
+assignment: 5
+author: "Miles Conn"
+---
+import { Image } from 'astro:assets';
+import Latex from "../../components/Latex.astro";
+import ILatex from "../../components/InlineLatex.astro";
+import CaptionedImage from "../../components/CaptionedImage.astro";
+
+import LossExperiments from "../../assets/assgn5/loss_experiments.astro";
+import LatentExperiments from "../../assets/assgn5/latent_experiments.astro";
+import ModelExperiments from "../../assets/assgn5/model_experiments.astro";
+import L1Experiments from "../../assets/assgn5/l1_experiment.astro"; 
+import DrawExpriments from "../../assets/assgn5/draw_experiments.astro";
+import DiffusionExperiment from "../../assets/assgn5/diffusion.astro";
+import NoisierStart from "../../assets/assgn5/diffusion/misc/00000_Grumpy-cat,-realistic,-photograph,-life-like,-fisheye_7.0.png";
+import Misc from "../../assets/assgn5/misc.astro";
+
+# Inverting the Generator
+
+## Experiments
+
+A note on experiments. It may seem like the originals don't line up with the rest of the data. I usually ran experiments by iterating my functions over various settings and resuing the same loader.
+[Sources online](https://stackoverflow.com/questions/60311307/how-does-one-reset-the-dataloader-in-pytorch) seem to indicate the calling enumerate on a loader will reset it however this doesn't seem to be the case which is unfortunate.
+As a result, not all my experiment orignals line up with each other. Therefore, the judging of best setting is based on on overall outcome as compared to others. 
+
+### Effects of Regularization
+
+To test the effects of regularization I turned it off when calculating perceptual loss. There was no discernible difference 
+in the results and so I'm not showing them. One benefit of this is that the optimization could be done slightly faster 
+without regularization as it requires fewer computations. This is a surprising result as regularization usually helps when training 
+however, since we're solving an optimization question it might be that we only care about the relative losses versus the absolute hence regularization isn't as helpful.
+
+### Effects of Different Losses
+
+To test the different losses I ran an experiment over the range `[0,1.0]`. However, 
+despite turning off shuffling in the dataloader I found successive runs still had shuffling.
+Therefore, I'm judging just based off of output. I think <ILatex formula="w_{perc} = 0.2"/> looks best here.
+
+<LossExperiments />
+
+#### L1 Loss Experiments
+
+We repeated the loss experiments while modulating `l1` loss. 
+
+<L1Experiments />
+
+Once again it's hard to judge but I found a `l1 = 0.2` loss resulted in good results.
+
+### Effects of Latent Space
+
+<LatentExperiments />
+
+Overall I would say that `w+` works the best which is to be expected. `w+` also ran slightly faster than `z` which was also expected as it should converge faster.
+I expected `w+` to be visually very different from `z` but this doesn't seem to be the case. This was surprising as `w+` captures latents from every layer.
+
+### Effects of Model Type
+
+Finally we test for best model. 
+
+<ModelExperiments />
+
+In all cases styleGAN has better output but takes longer to run. I'm unaware of the architecture for 
+StyleGan but if it has more weights and layers than VGG-19 then this would make sense.
+
+```
+Vanilla Duration: 13.743687152862549 for 4 images
+StyleGAN Duration: 63.99258279800415 for 4 images
+```
+
+# Scribble To Image
+
+With these considerations in mind we now perform tests using scribbles as our base image.
+
+<DrawExpriments />
+
+These results were very surprising as the output essentially has no variation! I then thought that `0.2` was too strong a weight for perceptual loss and 
+I lowered it to `0.02` which did not result in any differences unfortunately. This makes it really hard to judge what drawing leads to better convergence or has better effects and they all converge on the same thing.
+
+# Stable Diffusion
+
+For part 3 we had to implement stable diffusion DDPM sampling and classifier-free diffusion guidance.
+Stable diffusion is often touted as slow and now I finally understand why. To generate to image we need to gradually denoise an image
+at each of the <ILatex formula="n \in N"/> steps. Of course, a lot of this process is wasteful as for a significant period of that process the image is mostly noise.
+This process took around 2 minutes on a Nvidia T4 GPU via a `g4xlarge.dn` ec2 instance.
+
+We use a pretrained diffusion model and implemented guidance on top of it. I naively thought that the schedule parameters weren't super important 
+but it turns out being off by 1 with the values of <ILatex formula="\alpha, \bar{\alpha}"/> led to poor quality images. 
+
+Unlike most diffusion models we use an initial handdrawn image as a starting step. 
+
+## Results
+
+
+The results are done with the following prompt
+
+> "Grumpy cat, realistic, photograph, life like, fisheye"
+
+One thing I found annoying was despite my initial drawing having a smiling cat the diffusion model still made it grumpy.
+
+<DiffusionExperiment />
+
+Finally, here is an image with the same prompt but I increased the noise on the initial image by `1.5`
+<CaptionedImage src={NoisierStart} caption="Experiment with the same prompt as above except instead we added 1.5x more noise for our initial image"/>
+
+The results are really fantastic which seems to imply the initial diffusion model was really good and by starting from a noisier image we're relying on it more.
+
+Finally here are some miscaelleanous ones. The really poor quality noisy ones are due to off-by-one errors with scheduling but I wanted to include them anyways.
+
+<Misc />

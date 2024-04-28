@@ -1,0 +1,27 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import InlineLatex from "../../components/InlineLatex.astro";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn5/diffusion/misc/*.{jpeg,jpg,png,gif}",
+);
+
+function name2Experiment(name: string): string {
+    const paths = name.split("/");
+    const fileName = paths[paths.length - 1];
+    const experiments = fileName.split("_");
+    return experiments[1];
+}
+---
+
+{
+    Object.values(images).map((value) => (
+        <div class="center">
+            <Image src={value()} alt={`${value}`} />
+            <figcaption class="text-center mb-10">
+                {name2Experiment(value.name)}
+            </figcaption>
+        </div>
+    ))
+}

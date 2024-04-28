@@ -1,0 +1,76 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import InlineLatex from "../../components/InlineLatex.astro";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn5/diffusion/tests/*.{jpeg,jpg,png,gif}",
+);
+
+const sourceImages = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn5/diffusion/inputs/*.{jpeg,jpg,png,gif}",
+);
+
+const originalImages = ["1-cat-512.png", "2-cat-512.png"];
+
+const pathPrefix1 = "/src/assets/assgn5/diffusion/inputs/";
+const pathPrefix2 = "/src/assets/assgn5/diffusion/tests/";
+
+const guidanceScales = [5.0, 15.0, 30.0];
+
+function getImagePath(originalImage: string, guidanceScale: number): string {
+    const [index] = originalImage.split("-");
+    return `${pathPrefix2}cat${index}_Grumpy-cat,-realistic,-photograph,-life-like,-fisheye_${guidanceScale.toFixed(1)}.png`;
+}
+
+---
+
+<div style="overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>Original Sketch</th>
+                {
+                    guidanceScales.map((guidanceScale) => (
+                        <th>
+                            <InlineLatex
+                                formula={`\\lambda = ${guidanceScale}`}
+                            />
+                        </th>
+                    ))
+                }
+            </tr>
+        </thead>
+        <tbody>
+            {
+                originalImages.map((originalImage) => (
+                    <tr>
+                        <td>
+                            <Image
+                                src={sourceImages[
+                                    pathPrefix1 + originalImage
+                                ]()}
+                                alt={originalImage}
+                            />
+                        </td>
+                        {guidanceScales.map((guidanceScale) => {
+                            const imagePath = getImagePath(
+                                originalImage,
+                                guidanceScale,
+                            );
+                            console.log("Image path: ", imagePath);
+                            return (
+                                <td>
+                                    <Image
+                                        src={images[imagePath]()}
+                                        alt={imagePath}
+                                    />
+                                </td>
+                            );
+                        })}
+                    </tr>
+                ))
+            }
+        </tbody>
+    </table>
+</div>

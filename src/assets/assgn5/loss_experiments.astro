@@ -1,0 +1,66 @@
+---
+import type { ImageMetadata } from "astro";
+import InlineLatex from "../../components/InlineLatex.astro";
+import { Image } from "astro:assets";
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+    "/src/assets/assgn5/loss/*.{jpeg,jpg,png,gif}",
+);
+
+const prefixPath = "/src/assets/assgn5/loss/";
+
+const originalImages = ["0_data.png", "1_data.png", "2_data.png", "3_data.png"];
+
+const perceptualLossValues = [0, 0.2, 0.4, 0.6, 0.8, 1];
+
+function getImagePath(originalImage: string, perceptualLoss: number): string {
+    const [index] = originalImage.split("_");
+    return `${prefixPath}${index}_stylegan_z_${perceptualLoss}_1000.png`;
+}
+---
+
+<table class="table-auto">
+    <thead>
+        <tr>
+            <th>Original</th>
+            {
+                perceptualLossValues.map((value) => (
+                    <th>
+                        <InlineLatex formula={`w_{perc} = ${value}`} />
+                    </th>
+                ))
+            }
+        </tr>
+    </thead>
+    <tbody>
+        {
+            originalImages.map((originalImage) => {
+                return (
+                    <tr>
+                        <td>
+                            <Image
+                                src={images[prefixPath + originalImage]()}
+                                alt={originalImage}
+                            />
+                        </td>
+                        {perceptualLossValues.map((perceptualLoss) => {
+                            const imagePath = getImagePath(
+                                originalImage,
+                                perceptualLoss,
+                            );
+                            return (
+                                <td>
+                                    <Image
+                                        src={images[imagePath]()}
+                                        alt={imagePath}
+                                        class="min-w-[100px] min-h-[100px] object-cover"
+                                    />
+                                </td>
+                            );
+                        })}
+                    </tr>
+                );
+            })
+        }
+    </tbody>
+</table>
