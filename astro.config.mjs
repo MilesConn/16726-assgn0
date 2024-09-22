@@ -8,9 +8,8 @@ export default defineConfig({
   output: "static",
   integrations: [tailwind(), mdx()],
   // TODO: specify project
-  site: "https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/proj5/",
+  site: "https://www.andrew.cmu.edu/course/15472-s24-users/mconn/F/",
   build: {
-    assetsPrefix:
-      "https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/proj5/",
+    assetsPrefix: "https://www.andrew.cmu.edu/course/15472-s24-users/mconn/F/"
   },
 });

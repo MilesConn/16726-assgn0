@@ -1,9 +1,0 @@
----
-import DualNoiseExperiment from "./DualNoiseExperiment.astro";
-
-const images = import.meta.glob<{ default: ImageMetadata }>(
-        "/src/assets/assgn4/experiment2/*.{jpeg,jpg,png,gif}",
-);
----
-
-<DualNoiseExperiment images={images} />
