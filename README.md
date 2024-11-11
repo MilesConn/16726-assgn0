@@ -21,3 +21,4 @@ If you don't want to build it yourself you can view it (for the timebeing) at th
 [Proj3](https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/proj3/)
 [Proj4](https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/proj4/)
 [Proj5](https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/proj5/)
+[Final](https://www.andrew.cmu.edu/course/16-726-sp24/projects/mconn/final/)
